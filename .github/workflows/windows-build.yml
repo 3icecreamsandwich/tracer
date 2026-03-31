@@ -1,0 +1,30 @@
+name: Tracer Build for Windows
+on:
+  workflow_dispatch:
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install frontend deps
+        run: bun install
+      - name: Build Tauri app (Windows)
+        run: bun run tauri build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tauri-windows-build
+          path: |
+            src-tauri/target/release/bundle/**/*
+            src-tauri/target/release/*.exe
