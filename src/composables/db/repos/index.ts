@@ -1,0 +1,5 @@
+export { createProfileRepo } from './profile.repo'
+export { createSettingsRepo } from './settings.repo'
+export { createSetsRepo } from './sets.repo'
+export { createStarsRepo } from './stars.repo'
+export { createStudyGuidesRepo } from './study-guides.repo'
