@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nuxt dev --host 127.0.0.1 --port 3000",
     "build": "nuxt build",
-    "generate": "nuxt generate && rm -rf dist && cp -R .output/public dist",
+    "generate": "nuxt generate",
     "tauri:dev": "bun run tauri dev",
     "tauri:build": "bun run tauri build",
     "test:unit": "vitest run && cd src-tauri && cargo test",

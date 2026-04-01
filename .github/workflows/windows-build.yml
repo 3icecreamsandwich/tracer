@@ -1,8 +1,8 @@
-name: Tracer Build for Windows
+name: Build Windows Installer
 on:
   workflow_dispatch:
 jobs:
-  build-windows:
+  build-windows-installer:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -17,14 +17,22 @@ jobs:
           node-version: 20
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-      - name: Install frontend deps
+      # Ensure tauri.conf.json bundles NSIS installer
+      - name: Force bundle target to NSIS
+        shell: pwsh
+        run: |
+          $path = "src-tauri/tauri.conf.json"
+          $json = Get-Content $path -Raw | ConvertFrom-Json
+          $json.bundle.targets = @("nsis")
+          $json | ConvertTo-Json -Depth 100 | Set-Content $path -Encoding UTF8
+          Write-Host "Updated bundle.targets to nsis"
+      - name: Install dependencies
         run: bun install
-      - name: Build Tauri app (Windows)
+      - name: Build Tauri Windows installer
         run: bun run tauri build
-      - name: Upload artifacts
+      - name: Upload NSIS installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tauri-windows-build
-          path: |
-            src-tauri/target/release/bundle/**/*
-            src-tauri/target/release/*.exe
+          name: tracer-alpha-v0.0.0-f0
+          path: src-tauri/target/release/bundle/nsis/*setup*.exe
+          if-no-files-found: error

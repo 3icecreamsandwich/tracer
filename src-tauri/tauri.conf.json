@@ -4,10 +4,9 @@
   "version": "0.1.0",
   "identifier": "com.tracer.app",
   "build": {
-    "beforeDevCommand": "bun run dev",
     "beforeBuildCommand": "bun run generate",
     "devUrl": "http://127.0.0.1:3000",
-    "frontendDist": "../dist"
+    "frontendDist": "../.output/public"
   },
   "app": {
     "windows": [
@@ -29,7 +28,7 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app"],
+    "targets": ["nsis"],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
