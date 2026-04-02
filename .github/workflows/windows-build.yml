@@ -1,4 +1,4 @@
-name: Build Windows Installer
+name: Build Windows Installer (NSIS)
 on:
   workflow_dispatch:
 jobs:
