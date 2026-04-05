@@ -19,7 +19,9 @@ function toVaultSecretError(err: unknown): VaultSecretErrorShape {
   return { code: 'unknown', message: typeof err === 'string' ? err : 'Unexpected error' }
 }
 
-const hasTauriInternals = hasTauriRuntime()
+function hasTauriInternalsNow(): boolean {
+  return hasTauriRuntime()
+}
 
 const inMemorySecrets = new Map<string, string>()
 
@@ -39,7 +41,7 @@ export class VaultSecretError extends Error {
 }
 
 export async function aiSecretsGet(kind: AiCredentialKind): Promise<string | null> {
-  if (!hasTauriInternals) {
+  if (!hasTauriInternalsNow()) {
     return inMemorySecrets.get(kind) ?? null
   }
   try {
@@ -54,7 +56,7 @@ export async function aiSecretsGet(kind: AiCredentialKind): Promise<string | nul
 
 export async function aiSecretsSet(kind: AiCredentialKind, value: string): Promise<void> {
   const trimmed = value.trim()
-  if (!hasTauriInternals) {
+  if (!hasTauriInternalsNow()) {
     if (!trimmed) {
       inMemorySecrets.delete(kind)
     } else {
@@ -71,7 +73,7 @@ export async function aiSecretsSet(kind: AiCredentialKind, value: string): Promi
 }
 
 export async function aiSecretsDelete(kind: AiCredentialKind): Promise<void> {
-  if (!hasTauriInternals) {
+  if (!hasTauriInternalsNow()) {
     inMemorySecrets.delete(kind)
     return
   }
@@ -84,7 +86,7 @@ export async function aiSecretsDelete(kind: AiCredentialKind): Promise<void> {
 }
 
 export async function aiOpenAiCompatGetConfig(): Promise<OpenAiCompatConfig | null> {
-  if (!hasTauriInternals) {
+  if (!hasTauriInternalsNow()) {
     const raw = inMemorySecrets.get('openai_compat_config')
     if (!raw) return null
     try {
@@ -111,12 +113,12 @@ export async function aiOpenAiCompatSetConfig(config: OpenAiCompatConfig): Promi
     baseURL: config.baseURL.trim(),
     modelId: config.modelId.trim()
   }
-  if (!hasTauriInternals) {
+  if (!hasTauriInternalsNow()) {
     inMemorySecrets.set('openai_compat_config', JSON.stringify(payload))
     return
   }
   try {
-    await invoke('ai_openai_compat_set_config', { configJson: JSON.stringify(payload) })
+    await invoke('ai_openai_compat_set_config', { args: { configJson: JSON.stringify(payload) } })
   } catch (e) {
     const err = toVaultSecretError(e)
     throw new VaultSecretError(err.code, err.message)
