@@ -28,7 +28,7 @@
                     <div class="shrink-0">
                         <button
                             type="button"
-                            class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                            class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700"
                             :disabled="busy || !set"
                             @click="openExport"
                         >
@@ -172,14 +172,13 @@
                                     <button
                                         type="button"
                                         class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
-                                        :disabled="set.terms.length <= 1"
                                         @click="shuffleRun"
                                     >
                                         Shuffle
                                     </button>
                                     <button
                                         type="button"
-                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800"
                                         :disabled="set.terms.length === 0"
                                         @click="restartRun"
                                     >
@@ -302,7 +301,7 @@
                                     >
                                         <button
                                             type="button"
-                                            class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                            class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700"
                                             :disabled="!currentTerm || starBusy"
                                             :aria-pressed="isCurrentStarred"
                                             @click="toggleStar"
