@@ -3,6 +3,26 @@
 version = 4
 
 [[package]]
+name = "Tracer"
+version = "0.1.0"
+dependencies = [
+ "argon2",
+ "keyring",
+ "rand_core 0.6.4",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-http",
+ "tauri-plugin-opener",
+ "tauri-plugin-sql",
+ "tauri-plugin-stronghold",
+ "tempfile",
+ "tokio",
+ "urlencoding",
+]
+
+[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6019,26 +6039,6 @@ name = "tower-service"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8df9b6e13f2d32c91b9bd719c00d1958837bc7dec474d94952798cc8e69eeec3"
-
-[[package]]
-name = "tracer"
-version = "0.1.0"
-dependencies = [
- "argon2",
- "keyring",
- "rand_core 0.6.4",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-http",
- "tauri-plugin-opener",
- "tauri-plugin-sql",
- "tauri-plugin-stronghold",
- "tempfile",
- "tokio",
- "urlencoding",
-]
 
 [[package]]
 name = "tracing"
