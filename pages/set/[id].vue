@@ -169,6 +169,14 @@
                                     >
                                         {{ ratioText }}
                                     </p>
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-flashcards`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
+                                    >
+                                        ⛶ Fullscreen
+                                    </NuxtLink>
                                     <button
                                         type="button"
                                         class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
@@ -249,6 +257,7 @@
                                     ref="viewerButtonEl"
                                     type="button"
                                     class="mt-3 w-full rounded-md border border-slate-200 bg-slate-50 p-6 text-left shadow-sm hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                    :class="{ 'animate-flip': isFlipping, 'animate-slide-left': isNavigating === 'next', 'animate-slide-right': isNavigating === 'prev' }"
                                     :disabled="set.terms.length === 0"
                                     @click="toggleFlip"
                                 >
@@ -360,6 +369,14 @@
                                     >
                                         {{ learnRatioText }}
                                     </p>
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-learn`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
+                                    >
+                                        ⛶ Fullscreen
+                                    </NuxtLink>
                                     <button
                                         type="button"
                                         class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
@@ -645,7 +662,7 @@
                                     <p
                                         class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400"
                                     >
-                                        4×4 · 60 seconds · 8 pairs
+                                        Match the pairs · Click "Memory" to toggle memory mode
                                     </p>
                                 </div>
 
@@ -655,6 +672,15 @@
                                     >
                                         {{ matchTopline }}
                                     </p>
+
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-match`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
+                                    >
+                                        ⛶ Fullscreen
+                                    </NuxtLink>
 
                                     <button
                                         v-if="
@@ -682,6 +708,17 @@
                                         Restart
                                     </button>
                                 </div>
+                            </div>
+
+                            <div v-if="!matchIsRunning && !matchIsFinished" class="mt-3 flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                    :class="{ 'bg-slate-100 dark:bg-slate-900': matchMemoryMode }"
+                                    @click="matchMemoryMode = !matchMemoryMode"
+                                >
+                                    {{ matchMemoryMode ? '✓' : '' }} Memory
+                                </button>
                             </div>
 
                             <p
@@ -768,7 +805,7 @@
                                         v-for="tile in matchTiles"
                                         :key="tile.id"
                                         type="button"
-                                        class="relative aspect-square rounded-md border p-2 text-left shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        class="relative h-24 w-full rounded-md border p-2 text-left shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950 transition-colors"
                                         :class="matchTileClass(tile)"
                                         :disabled="
                                             matchTileDisabled(tile) || matchBusy
@@ -841,8 +878,18 @@
                             <ul v-else class="mt-3 space-y-3">
                                 <li v-for="(t, idx) in set.terms" :key="t.id">
                                     <div
-                                        class="rounded-md border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
+                                        class="relative rounded-md border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950"
                                     >
+                                        <button
+                                            type="button"
+                                            class="absolute top-3 right-3 inline-flex items-center justify-center w-6 h-6 rounded-md text-sm transition-colors"
+                                            :class="starredTermIds.has(t.id as Uuid) ? 'text-yellow-500' : 'border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900'"
+                                            :aria-pressed="starredTermIds.has(t.id as Uuid)"
+                                            :disabled="starBusy"
+                                            @click="toggleTermStar(t.id as Uuid)"
+                                        >
+                                            <span class="text-lg">★</span>
+                                        </button>
                                         <p
                                             class="text-xs font-medium text-slate-500 dark:text-slate-400"
                                         >
@@ -951,6 +998,14 @@
                     </button>
                     <button
                         type="button"
+                        class="inline-flex items-center rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                        :disabled="!exportTsv"
+                        @click="downloadExport"
+                    >
+                        Download
+                    </button>
+                    <button
+                        type="button"
                         class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                         :disabled="!exportTsv"
                         @click="selectAllExport"
@@ -1024,6 +1079,8 @@ const defaultModelId = ref<string | null>(null);
 const learnHybridEnabled = ref(false);
 
 const isFlipped = ref(false);
+const isFlipping = ref(false);
+const isNavigating = ref<'prev' | 'next' | null>(null);
 
 type FlashcardsAnswer = "correct" | "incorrect";
 
@@ -1085,7 +1142,7 @@ const learnQuestions = ref<LearnQuestion[]>([]);
 const learnAnswersByQuestionId = ref<Record<string, boolean>>({});
 
 const matchPairsRequested = 8;
-const matchDurationSeconds = 60;
+const matchDurationSeconds = 600; // 10 minutes max for stopwatch
 
 const matchBusy = ref(false);
 const matchError = ref<string | null>(null);
@@ -1093,12 +1150,13 @@ const matchRunCounter = ref(0);
 const matchTiles = ref<MatchTile[]>([]);
 const matchStartedAtMs = ref<number | null>(null);
 const matchEndedAtMs = ref<number | null>(null);
-const matchTimeLeftMs = ref(matchDurationSeconds * 1000);
+const matchElapsedTimeMs = ref(0);
 const matchTimerHandle = shallowRef<number | null>(null);
 const matchSelectedTileIds = ref<string[]>([]);
 const matchMatchedPairIds = ref<Set<Uuid>>(new Set());
 const matchAttemptsCount = ref(0);
 const matchCorrectAttemptsCount = ref(0);
+const matchMemoryMode = ref(false);
 
 const matchPairsTarget = computed(() => {
     const s = set.value;
@@ -1229,7 +1287,11 @@ const exportTsv = computed(() => {
 
 function toggleFlip() {
     if (totalCount.value === 0) return;
-    isFlipped.value = !isFlipped.value;
+    isFlipping.value = true;
+    setTimeout(() => {
+        isFlipped.value = !isFlipped.value;
+        isFlipping.value = false;
+    }, 250);
 }
 
 function goPrev() {
@@ -1239,8 +1301,12 @@ function goPrev() {
         totalCount.value - 1,
     );
     if (next !== cursorIndex.value) {
-        cursorIndex.value = next;
-        isFlipped.value = false;
+        isNavigating.value = 'prev';
+        setTimeout(() => {
+            cursorIndex.value = next;
+            isFlipped.value = false;
+            isNavigating.value = null;
+        }, 250);
     }
 }
 
@@ -1251,8 +1317,12 @@ function goNext() {
         totalCount.value - 1,
     );
     if (next !== cursorIndex.value) {
-        cursorIndex.value = next;
-        isFlipped.value = false;
+        isNavigating.value = 'next';
+        setTimeout(() => {
+            cursorIndex.value = next;
+            isFlipped.value = false;
+            isNavigating.value = null;
+        }, 250);
     }
 }
 
@@ -1290,18 +1360,17 @@ function clearMatchTimer() {
     }
 }
 
-function matchComputeTimeLeftMs(nowMs: number) {
+function matchComputeElapsedMs(nowMs: number) {
     const start = matchStartedAtMs.value;
-    if (start === null) return matchDurationSeconds * 1000;
-    const elapsed = Math.max(0, nowMs - start);
-    return Math.max(0, matchDurationSeconds * 1000 - elapsed);
+    if (start === null) return 0;
+    return Math.max(0, nowMs - start);
 }
 
 function matchStop(reason: "completed" | "timeout") {
     if (matchEndedAtMs.value !== null) return;
     const now = Date.now();
     matchEndedAtMs.value = now;
-    matchTimeLeftMs.value = matchComputeTimeLeftMs(now);
+    matchElapsedTimeMs.value = matchComputeElapsedMs(now);
     clearMatchTimer();
 
     matchSelectedTileIds.value = [];
@@ -1309,23 +1378,16 @@ function matchStop(reason: "completed" | "timeout") {
     if (reason === "timeout") {
         // Results should still show in a calm state.
     }
-
-    const s = set.value;
-    if (!s) return;
-    const correct = matchCorrectAttemptsCount.value;
-    const attempted = matchAttemptsCount.value;
-    router.replace(
-        `/set/${s.id}/results?mode=match&correct=${correct}&attempted=${attempted}`,
-    );
 }
 
 function startMatchTimer() {
     clearMatchTimer();
     matchTimerHandle.value = window.setInterval(() => {
         const now = Date.now();
-        matchTimeLeftMs.value = matchComputeTimeLeftMs(now);
-        if (matchTimeLeftMs.value <= 0) {
-            matchTimeLeftMs.value = 0;
+        matchElapsedTimeMs.value = matchComputeElapsedMs(now);
+        // Stop if elapsed time reaches 10 minutes
+        if (matchElapsedTimeMs.value >= matchDurationSeconds * 1000) {
+            matchElapsedTimeMs.value = matchDurationSeconds * 1000;
             matchStop("timeout");
         }
     }, 125);
@@ -1340,7 +1402,7 @@ function resetMatchStateForRun() {
     matchCorrectAttemptsCount.value = 0;
     matchStartedAtMs.value = null;
     matchEndedAtMs.value = null;
-    matchTimeLeftMs.value = matchDurationSeconds * 1000;
+    matchElapsedTimeMs.value = 0;
     clearMatchTimer();
 }
 
@@ -1362,7 +1424,7 @@ function startMatch() {
         return;
     }
     matchStartedAtMs.value = Date.now();
-    matchTimeLeftMs.value = matchDurationSeconds * 1000;
+    matchElapsedTimeMs.value = 0;
     startMatchTimer();
 }
 
@@ -1372,6 +1434,11 @@ function restartMatchRun() {
 }
 
 function matchIsTileRevealed(tile: MatchTile) {
+    // If memory mode is off, always reveal (show content)
+    if (!matchMemoryMode.value) {
+        return true;
+    }
+    // In memory mode, only reveal if matched or selected
     if (matchMatchedPairIds.value.has(tile.pairId)) return true;
     if (matchSelectedTileIds.value.includes(tile.id)) return true;
     return false;
@@ -1395,6 +1462,10 @@ function matchTileClass(tile: MatchTile) {
     const revealed = matchIsTileRevealed(tile);
     if (matched) {
         return "border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-100";
+    }
+    if (selected && !matchMemoryMode.value) {
+        // Light gray fill when selected with Memory OFF
+        return "border-slate-300 bg-slate-200 text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-50";
     }
     if (selected) {
         return "border-slate-300 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50";
@@ -1829,6 +1900,31 @@ async function toggleStar() {
     }
 }
 
+async function toggleTermStar(termId: Uuid) {
+    const s = set.value;
+    if (!s) return;
+    if (starBusy.value) return;
+
+    const next = !starredTermIds.value.has(termId);
+    starBusy.value = true;
+    try {
+        if (!isWebPreview.value) {
+            const db = await useTracerDb();
+            await createStarsRepo(db).setStarred(
+                s.id as Uuid,
+                termId,
+                next,
+            );
+        }
+        const updated = new Set(starredTermIds.value);
+        if (next) updated.add(termId);
+        else updated.delete(termId);
+        starredTermIds.value = updated;
+    } finally {
+        starBusy.value = false;
+    }
+}
+
 function shouldIgnoreKey(e: KeyboardEvent) {
     const el = e.target;
     if (!(el instanceof HTMLElement)) return false;
@@ -1874,7 +1970,7 @@ function formatSecondsCeil(ms: number) {
 
 const matchTopline = computed(() => {
     if (!matchIsRunning.value && !matchIsFinished.value) return "Ready";
-    const seconds = formatSecondsCeil(matchTimeLeftMs.value);
+    const seconds = Math.floor(matchElapsedTimeMs.value / 1000);
     const pairs = `${matchMatchedPairsCount.value}/${matchPairsTarget.value}`;
     if (matchIsRunning.value) return `Time: ${seconds}s · Matched: ${pairs}`;
     return `Done · Matched: ${pairs}`;
@@ -1888,11 +1984,9 @@ const matchAccuracyText = computed(() => {
 });
 
 const matchTimeText = computed(() => {
-    const left = Math.max(0, matchTimeLeftMs.value);
-    const elapsed = matchDurationSeconds * 1000 - left;
-    const elapsedS = Math.round(elapsed / 1000);
-    const leftS = Math.round(left / 1000);
-    return `${elapsedS}s elapsed · ${leftS}s remaining`;
+    const elapsedMs = matchElapsedTimeMs.value;
+    const elapsedS = Math.round(elapsedMs / 1000);
+    return `${elapsedS}s`;
 });
 
 function newMsgId() {
@@ -2073,6 +2167,27 @@ async function copyExport() {
     exportMessage.value = "Select the text and copy it manually.";
 }
 
+function downloadExport() {
+    exportMessage.value = null;
+    const text = exportTsv.value;
+    if (!text) return;
+
+    const s = set.value;
+    const filename = s ? `${s.title}.txt` : "export.txt";
+    
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    exportMessage.value = "Downloaded.";
+}
+
 onMounted(async () => {
     let lockGateEvaluated = false;
     let lockGateRequiresUnlock = false;
@@ -2186,6 +2301,11 @@ watch(
             resetMatchStateForRun();
             if (set.value) matchPrepareTiles(set.value);
         }
+        // Reset match state and stopwatch when navigating away from match mode
+        if (prev === "match" && next !== "match") {
+            resetMatchStateForRun();
+            matchMemoryMode.value = false;
+        }
         await nextTick();
         if (next === "chat") {
             chatTextareaEl.value?.focus();
@@ -2203,3 +2323,54 @@ onBeforeUnmount(() => {
     window.removeEventListener("keydown", onKeydown);
 });
 </script>
+
+<style scoped>
+@keyframes flip {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideLeft {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-10%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(10%);
+        opacity: 0;
+    }
+}
+
+.animate-flip {
+    animation: flip 0.25s ease-in-out;
+}
+
+.animate-slide-left {
+    animation: slideLeft 0.25s ease-in-out;
+}
+
+.animate-slide-right {
+    animation: slideRight 0.25s ease-in-out;
+}
+</style>
