@@ -1,5 +1,5 @@
 <template>
-    <main class="flex flex-col h-screen bg-white dark:bg-slate-950">
+    <main class="flex flex-col h-8/9 bg-white dark:bg-slate-950">
         <!-- Header with Back button and progress -->
         <div class="border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-950">
             <div class="flex items-center justify-between gap-4">
