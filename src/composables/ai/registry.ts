@@ -170,7 +170,7 @@ export async function resolveAiModel(qualifiedId: string): Promise<LanguageModel
      const gh = createOpenAICompatible({
        name: 'github',
        apiKey: token,
-       baseURL: 'https://models.github.ai',
+       baseURL: 'https://models.github.ai/inference',
        headers: githubHeaders,
        fetch: aiHttpFetch
      })

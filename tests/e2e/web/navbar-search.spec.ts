@@ -1,15 +1,18 @@
 import { test, expect } from '@playwright/test'
 
-test('navbar search: navigates to home with q query', async ({ page }) => {
+test('navbar search: shows dropdown results without changing the page query', async ({ page }) => {
   await page.goto('/settings')
 
   const search = page.getByPlaceholder('Search sets…')
   await expect(search).toBeVisible()
 
-  await search.fill('biology')
-  await search.press('Enter')
+  await search.click()
+  await expect(page.getByRole('listbox', { name: 'Search results' })).toBeVisible()
+  await expect(page.getByRole('option', { name: /Demo set/ })).toBeVisible()
 
-  await expect(page).toHaveURL(/\/?(\?|$)/)
-  await expect(page).toHaveURL(/\bq=biology\b/)
-  await expect(page.getByRole('heading', { name: 'Sets' })).toBeVisible()
+  await search.fill('demo')
+  await page.waitForTimeout(600)
+
+  await expect(page).toHaveURL(/\/settings(?:[?#]|$)/)
+  await expect(page.getByRole('option', { name: /Demo set/ })).toBeVisible()
 })

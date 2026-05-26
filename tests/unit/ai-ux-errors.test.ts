@@ -17,6 +17,7 @@ vi.mock('../../src/composables/ai/credentials', () => {
 
 import { normalizeAiError } from '../../src/composables/ai/ux-errors'
 import { MissingAiCredentialError } from '../../src/composables/ai/errors'
+import { GenerateUnsupportedModelError } from '../../src/composables/ai/generate-request'
 import { TsvParseError } from '../../src/composables/db/validators'
 
 describe('ai ux errors', () => {
@@ -31,6 +32,12 @@ describe('ai ux errors', () => {
     const out = normalizeAiError(new TsvParseError('line 1 must contain a tab separator'))
     expect(out.key).toBe('parse_error_tsv')
     expect(out.showGoToSettings).toBe(false)
+  })
+
+  it('maps unsupported generate model errors to settings-actionable output', () => {
+    const out = normalizeAiError(new GenerateUnsupportedModelError('Generate requires a file-capable model.'))
+    expect(out.key).toBe('unsupported_model_input')
+    expect(out.showGoToSettings).toBe(true)
   })
 
   it('maps offline fetch failures to network_offline', () => {

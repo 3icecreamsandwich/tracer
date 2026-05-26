@@ -199,10 +199,17 @@ import {
 import { useLockSession } from '~/src/composables/lock-session'
 import { resolveAiModel } from '~/src/composables/ai/registry'
 import { hasTauriRuntime } from '~/src/composables/tauri'
-import { parseTermsTsv, TsvParseError, normalizeTerms, TermsValidationError } from '~/src/composables/db/validators'
+import { parseTermsTsv, normalizeTerms } from '~/src/composables/db/validators'
 import { generateText } from 'ai'
 import { normalizeAiError, aiErrorForMissingDefaultModel, type AiErrorUx } from '~/src/composables/ai/ux-errors'
-import { parseGenerateContractOutput, GenerateContractParseError } from '~/src/composables/ai/generate-contract'
+import { parseGenerateContractOutput } from '~/src/composables/ai/generate-contract'
+import {
+  assertGenerateModelSupportsUploadedFiles,
+  assertGenerateSourceLimits,
+  buildGeneratePromptText,
+  buildGenerateUserContent,
+  normalizeGenerateRequestError
+} from '~/src/composables/ai/generate-request'
 
 const router = useRouter()
 const { unlockedThisSession, markLocked, markUnlocked } = useLockSession()
@@ -360,25 +367,23 @@ async function onPicked(e: Event) {
     const pdfFiles = files.filter((f) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'))
     const imageFiles = files.filter((f) => f.type.startsWith('image/'))
 
-    if (imageFiles.length > 10) {
-      throw new Error(`Too many images selected. Max is 10; you selected ${imageFiles.length}.`)
-    }
-
     const pdfs: PickedPdf[] = []
     for (const f of pdfFiles) {
       const pages = await countPdfPages(f)
       pdfs.push({ kind: 'pdf', file: f, pages })
     }
 
-    const total = pdfs.reduce((sum, p) => sum + p.pages, 0)
-    if (total > 10) {
-      throw new Error(`PDF page limit exceeded. Max is 10 pages total; selected PDFs contain ${total} pages.`)
-    }
+    const nextPdfs = [...pickedPdfs.value, ...pdfs]
+    const nextImages: PickedImage[] = [
+      ...pickedImages.value,
+      ...imageFiles.map((f) => ({ kind: 'image' as const, file: f }))
+    ]
 
-    const images: PickedImage[] = imageFiles.map((f) => ({ kind: 'image', file: f }))
+    const total = nextPdfs.reduce((sum, p) => sum + p.pages, 0)
+    assertGenerateSourceLimits({ pdfPages: total, imageCount: nextImages.length })
 
-    pickedPdfs.value = pdfs
-    pickedImages.value = images
+    pickedPdfs.value = nextPdfs
+    pickedImages.value = nextImages
   } catch (err) {
     formError.value = toErrorMessage(err, 'Failed to process selected files.')
   } finally {
@@ -397,40 +402,6 @@ function generateTitleFromFiles() {
   const first = pickedPdfs.value[0]?.file?.name ?? pickedImages.value[0]?.file?.name
   if (first) return `Generated · ${first}`
   return 'Generated'
-}
-
-function buildPromptText() {
-  const extra = instructions.value.trim()
-  const extraLine = extra ? `User instructions: ${extra}\n` : ''
-  return [
-    'You are creating study materials from the provided source documents (PDFs and images).',
-    'Return EXACTLY two fenced code blocks and NOTHING else.',
-    '',
-    '1) A markdown study guide:',
-    '```study_guide_md',
-    '(markdown)',
-    '```',
-    '',
-    '2) Flashcards as TSV with one card per line:',
-    '```flashcards_tsv',
-    'term<TAB>definition',
-    '... (no header row)',
-    '```',
-    '',
-    'Flashcards TSV rules:',
-    '- Output TSV only inside the flashcards_tsv fence.',
-    '- One card per line.',
-    '- Each line must contain exactly ONE tab separator.',
-    '- Do not include tabs inside term or definition (use spaces instead).',
-    '- Do not include blank lines.',
-    '- Do not include numbering or bullets.',
-    '- If you need a line break inside a cell, use the literal sequence "\\n" (do not insert real newlines).',
-    '- Do not include a header row.',
-    '',
-    extraLine.trimEnd()
-  ]
-    .filter((x) => x.length > 0)
-    .join('\n')
 }
 
 async function onGenerate() {
@@ -471,25 +442,24 @@ async function onGenerate() {
       return
     }
 
+    assertGenerateModelSupportsUploadedFiles(settings.defaultModelId)
     const model = await resolveAiModel(settings.defaultModelId)
 
-    const content: any[] = [{ type: 'text', text: buildPromptText() }]
-
-    for (const p of pickedPdfs.value) {
-      content.push({
-        type: 'file',
-        data: await fileToUint8Array(p.file),
-        filename: p.file.name,
-        mediaType: 'application/pdf'
-      })
-    }
-    for (const img of pickedImages.value) {
-      content.push({
-        type: 'image',
-        image: await fileToUint8Array(img.file),
-        mediaType: img.file.type || 'image/*'
-      })
-    }
+    const content = buildGenerateUserContent({
+      promptText: buildGeneratePromptText(instructions.value),
+      pdfs: await Promise.all(
+        pickedPdfs.value.map(async (p) => ({
+          data: await fileToUint8Array(p.file),
+          filename: p.file.name
+        }))
+      ),
+      images: await Promise.all(
+        pickedImages.value.map(async (img) => ({
+          data: await fileToUint8Array(img.file),
+          mediaType: img.file.type || 'image/*'
+        }))
+      )
+    })
 
     const res = await generateText({
       model,
@@ -525,11 +495,7 @@ async function onGenerate() {
 
     await router.replace(`/set/${setId}`)
   } catch (e: unknown) {
-    if (e instanceof GenerateContractParseError || e instanceof TsvParseError || e instanceof TermsValidationError) {
-      showAiError(e)
-    } else {
-      showAiError(e)
-    }
+    showAiError(normalizeGenerateRequestError(e))
   } finally {
     busy.value = false
     await nextTick()
