@@ -28,7 +28,7 @@
                     <div class="shrink-0">
                         <button
                             type="button"
-                            class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700"
+                            class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900"
                             :disabled="busy || !set"
                             @click="openExport"
                         >
@@ -62,21 +62,33 @@
                     <div v-else class="space-y-6">
                         <section aria-label="Study modes">
                             <div class="grid gap-3 sm:grid-cols-2">
-                                <NuxtLink
-                                    :to="`/set/${set.id}?mode=flashcards`"
-                                    class="group rounded-md border border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                <div
+                                    class="group rounded-md border flex flex-row justify-between items-center border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                 >
-                                    <p
-                                        class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                    <NuxtLink
+                                        :to="`/set/${set.id}?mode=flashcards`"
+                                        class="w-5/6"
                                     >
-                                        Flashcards
-                                    </p>
-                                    <p
-                                        class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        <p
+                                            class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                        >
+                                            Flashcards
+                                        </p>
+                                        <p
+                                            class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        >
+                                            Quick review
+                                        </p>
+                                    </NuxtLink>
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-flashcards`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
                                     >
-                                        Quick review
-                                    </p>
-                                </NuxtLink>
+                                        ⛶
+                                    </NuxtLink>
+                                </div>
 
                                 <NuxtLink
                                     v-if="studyGuideSetId"
@@ -94,36 +106,62 @@
                                         Markdown
                                     </p>
                                 </NuxtLink>
-                                <NuxtLink
-                                    :to="`/set/${set.id}?mode=learn`"
-                                    class="group rounded-md border border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+
+                                <div
+                                    class="group rounded-md border flex flex-row justify-between items-center border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                 >
-                                    <p
-                                        class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                    <NuxtLink
+                                        :to="`/set/${set.id}?mode=learn`"
+                                        class="w-5/6"
                                     >
-                                        Learn
-                                    </p>
-                                    <p
-                                        class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        <p
+                                            class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                        >
+                                            Learn
+                                        </p>
+                                        <p
+                                            class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        >
+                                            Quiz yourself
+                                        </p>
+                                    </NuxtLink>
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-learn`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
                                     >
-                                        Quiz yourself
-                                    </p>
-                                </NuxtLink>
-                                <NuxtLink
-                                    :to="`/set/${set.id}?mode=match`"
-                                    class="group rounded-md border border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        ⛶
+                                    </NuxtLink>
+                                </div>
+
+                                <div
+                                    class="group rounded-md border flex flex-row justify-between items-center border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                 >
-                                    <p
-                                        class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                    <NuxtLink
+                                        :to="`/set/${set.id}?mode=match`"
+                                        class="w-5/6"
                                     >
-                                        Match
-                                    </p>
-                                    <p
-                                        class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        <p
+                                            class="text-sm font-medium text-slate-900 dark:text-slate-50"
+                                        >
+                                            Match
+                                        </p>
+                                        <p
+                                            class="mt-1 text-sm text-slate-600 dark:text-slate-300"
+                                        >
+                                            Find pairs under pressure
+                                        </p>
+                                    </NuxtLink>
+                                    <NuxtLink
+                                        v-if="set"
+                                        :to="`/set/${set.id}-match`"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        title="Open fullscreen"
                                     >
-                                        Find pairs under pressure
-                                    </p>
-                                </NuxtLink>
+                                        ⛶
+                                    </NuxtLink>
+                                </div>
                                 <NuxtLink
                                     :to="`/set/${set.id}?mode=chat`"
                                     class="group rounded-md border border-slate-200 bg-white p-4 text-left shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
@@ -172,7 +210,7 @@
                                     <NuxtLink
                                         v-if="set"
                                         :to="`/set/${set.id}-flashcards`"
-                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                         title="Open fullscreen"
                                     >
                                         ⛶ Fullscreen
@@ -186,7 +224,7 @@
                                     </button>
                                     <button
                                         type="button"
-                                        class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800"
+                                        class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                         :disabled="set.terms.length === 0"
                                         @click="restartRun"
                                     >
@@ -225,7 +263,7 @@
                   </NuxtLink>  -->
                                     <button
                                         type="button"
-                                        class="inline-flex items-center rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                        class="inline-flex items-center rounded-md bg-[#FB5607] px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
                                         :disabled="set.terms.length === 0"
                                         @click="restartRun"
                                     >
@@ -257,7 +295,13 @@
                                     ref="viewerButtonEl"
                                     type="button"
                                     class="mt-3 w-full rounded-md border border-slate-200 bg-slate-50 p-6 text-left shadow-sm hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
-                                    :class="{ 'animate-flip': isFlipping, 'animate-slide-left': isNavigating === 'next', 'animate-slide-right': isNavigating === 'prev' }"
+                                    :class="{
+                                        'animate-flip': isFlipping,
+                                        'animate-slide-left':
+                                            isNavigating === 'next',
+                                        'animate-slide-right':
+                                            isNavigating === 'prev',
+                                    }"
                                     :disabled="set.terms.length === 0"
                                     @click="toggleFlip"
                                 >
@@ -310,7 +354,7 @@
                                     >
                                         <button
                                             type="button"
-                                            class="inline-flex items-center rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-orange-700"
+                                            class="inline-flex items-center rounded-md border border-[#FFBE0B] bg-white dark:bg-slate-950 px-3 py-2 text-sm font-medium text-[#FFBE0B] shadow-sm hover:bg-slate-50"
                                             :disabled="!currentTerm || starBusy"
                                             :aria-pressed="isCurrentStarred"
                                             @click="toggleStar"
@@ -323,7 +367,7 @@
                                         </button>
                                         <button
                                             type="button"
-                                            class="inline-flex items-center rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-700 shadow-sm hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:border-red-900/40 dark:bg-slate-950 dark:text-red-200 dark:hover:bg-red-950/40 dark:focus-visible:ring-red-500 dark:focus-visible:ring-offset-slate-950"
+                                            class="inline-flex items-center rounded-md border border-[#EF5454] bg-white px-3 py-2 text-sm font-medium text-[#EF5454] shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-offset-2 disabled:opacity-60 dark:bg-slate-950 dark:hover:bg-slate-900"
                                             :disabled="!currentTerm"
                                             @click="markIncorrect"
                                         >
@@ -331,7 +375,7 @@
                                         </button>
                                         <button
                                             type="button"
-                                            class="inline-flex items-center rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                                            class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900"
                                             :disabled="!currentTerm"
                                             @click="markCorrect"
                                         >
@@ -662,7 +706,8 @@
                                     <p
                                         class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400"
                                     >
-                                        Match the pairs · Click "Memory" to toggle memory mode
+                                        Match the pairs · Click "Memory" to
+                                        toggle memory mode
                                     </p>
                                 </div>
 
@@ -710,14 +755,20 @@
                                 </div>
                             </div>
 
-                            <div v-if="!matchIsRunning && !matchIsFinished" class="mt-3 flex items-center gap-2">
+                            <div
+                                v-if="!matchIsRunning && !matchIsFinished"
+                                class="mt-3 flex items-center gap-2"
+                            >
                                 <button
                                     type="button"
                                     class="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900 dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
-                                    :class="{ 'bg-slate-100 dark:bg-slate-900': matchMemoryMode }"
+                                    :class="{
+                                        'bg-slate-100 dark:bg-slate-900':
+                                            matchMemoryMode,
+                                    }"
                                     @click="matchMemoryMode = !matchMemoryMode"
                                 >
-                                    {{ matchMemoryMode ? '✓' : '' }} Memory
+                                    {{ matchMemoryMode ? "✓" : "" }} Memory
                                 </button>
                             </div>
 
@@ -883,10 +934,18 @@
                                         <button
                                             type="button"
                                             class="absolute top-3 right-3 inline-flex items-center justify-center w-6 h-6 rounded-md text-sm transition-colors"
-                                            :class="starredTermIds.has(t.id as Uuid) ? 'text-yellow-500' : 'border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900'"
-                                            :aria-pressed="starredTermIds.has(t.id as Uuid)"
+                                            :class="
+                                                starredTermIds.has(t.id as Uuid)
+                                                    ? 'text-yellow-500'
+                                                    : 'border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900'
+                                            "
+                                            :aria-pressed="
+                                                starredTermIds.has(t.id as Uuid)
+                                            "
                                             :disabled="starBusy"
-                                            @click="toggleTermStar(t.id as Uuid)"
+                                            @click="
+                                                toggleTermStar(t.id as Uuid)
+                                            "
                                         >
                                             <span class="text-lg">★</span>
                                         </button>
@@ -900,8 +959,8 @@
                                         >
                                             <span
                                                 class="font-medium text-slate-900 dark:text-slate-50"
-                                                >Term: </span
-                                            >
+                                                >Term:
+                                            </span>
                                             <span class="whitespace-pre-wrap">{{
                                                 t.front
                                             }}</span>
@@ -911,8 +970,8 @@
                                         >
                                             <span
                                                 class="font-medium text-slate-900 dark:text-slate-50"
-                                                >Definition: </span
-                                            >
+                                                >Definition:
+                                            </span>
                                             <span class="whitespace-pre-wrap">{{
                                                 t.back
                                             }}</span>
@@ -1080,7 +1139,7 @@ const learnHybridEnabled = ref(false);
 
 const isFlipped = ref(false);
 const isFlipping = ref(false);
-const isNavigating = ref<'prev' | 'next' | null>(null);
+const isNavigating = ref<"prev" | "next" | null>(null);
 
 type FlashcardsAnswer = "correct" | "incorrect";
 
@@ -1301,7 +1360,7 @@ function goPrev() {
         totalCount.value - 1,
     );
     if (next !== cursorIndex.value) {
-        isNavigating.value = 'prev';
+        isNavigating.value = "prev";
         setTimeout(() => {
             cursorIndex.value = next;
             isFlipped.value = false;
@@ -1317,7 +1376,7 @@ function goNext() {
         totalCount.value - 1,
     );
     if (next !== cursorIndex.value) {
-        isNavigating.value = 'next';
+        isNavigating.value = "next";
         setTimeout(() => {
             cursorIndex.value = next;
             isFlipped.value = false;
@@ -1910,11 +1969,7 @@ async function toggleTermStar(termId: Uuid) {
     try {
         if (!isWebPreview.value) {
             const db = await useTracerDb();
-            await createStarsRepo(db).setStarred(
-                s.id as Uuid,
-                termId,
-                next,
-            );
+            await createStarsRepo(db).setStarred(s.id as Uuid, termId, next);
         }
         const updated = new Set(starredTermIds.value);
         if (next) updated.add(termId);
@@ -2174,7 +2229,7 @@ function downloadExport() {
 
     const s = set.value;
     const filename = s ? `${s.title}.txt` : "export.txt";
-    
+
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -2184,7 +2239,7 @@ function downloadExport() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     exportMessage.value = "Downloaded.";
 }
 

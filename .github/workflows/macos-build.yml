@@ -1,0 +1,50 @@
+name: Build macOS Installer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-macos-installer:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Ensure tauri.conf.json bundles a macOS disk image installer.
+      - name: Force bundle target to DMG
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFileSync, writeFileSync } from 'node:fs';
+
+          const path = 'src-tauri/tauri.conf.json';
+          const config = JSON.parse(readFileSync(path, 'utf8'));
+          config.bundle.targets = ['dmg'];
+          writeFileSync(path, `${JSON.stringify(config, null, 2)}\n`);
+          console.log('Updated bundle.targets to dmg');
+          EOF
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build Tauri macOS installer
+        run: bun run tauri build
+
+      - name: Upload DMG installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracer-macos-installer
+          path: src-tauri/target/release/bundle/dmg/*.dmg
+          if-no-files-found: error
